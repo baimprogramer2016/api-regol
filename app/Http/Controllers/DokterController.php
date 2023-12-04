@@ -82,7 +82,7 @@ class DokterController extends Controller
         } catch (Throwable $e) {
             $result = [
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Terjadi Kesalahan '
+                'message' => 'Terjadi Kesalahan '.$e
             ];
             return response()->json($result);
         }

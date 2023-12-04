@@ -9,5 +9,5 @@ class Antrian extends Model
 {
     use HasFactory;
     protected $connection = 'odbc';
-    protected $table = 'antriandokter_test';
+    protected $table = 'antriandokter';
 }
