@@ -52,7 +52,7 @@ class AuthController extends Controller
         } catch (Throwable $e) {
             $result = [
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Terjadi Kesalahan' . $e
+                'message' => 'Terjadi Kesalahan'
             ];
             return response()->json($result);
         }
@@ -90,7 +90,7 @@ class AuthController extends Controller
         } catch (Throwable $e) {
             $result = [
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Terjadi Kesalahan' . $e
+                'message' => 'Terjadi Kesalahan'
             ];
             return response()->json($result);
         }
@@ -130,7 +130,7 @@ class AuthController extends Controller
         } catch (Throwable $e) {
             $result = [
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-                'message' => 'Terjadi Kesalahan' . $e
+                'message' => 'Terjadi Kesalahan'
             ];
             return response()->json($result);
         }
