@@ -73,11 +73,11 @@ class AuthController extends Controller
 
                 $data = $this->auth_repo->login($param_array);
 
-                if ($data == true) {
+                if ($data['status'] == true) {
                     $result = [
                         "code" => Response::HTTP_OK,
                         "message" => "Berhasil",
-                        "data" => $param_array
+                        "data" => $data['data']
                     ];
                 } else {
                     $result = [

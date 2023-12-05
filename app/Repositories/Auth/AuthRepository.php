@@ -38,15 +38,29 @@ class AuthRepository implements AuthInterface
         $this->id = $param_array['id'];
         $this->telpon = $param_array['telpon'];
 
-        $check = $this->auth_model
+        $data = $this->auth_model
             ->where('id', $this->id)
             ->where('telpon', $this->telpon)
-            ->get()
-            ->count();
+            ->get();
+        
+        $check = $data->count();
+
         if ($check > 0) {
-            return true;
+            $info = [
+                "id" => $data[0]['id'],
+                "nama" => $data[0]['nama'],
+                "telpon" => $data[0]['telpon'],
+                "registration_id" => $data[0]['registration_id'],
+            ];
+            return [
+                "status" => true,
+                "data" => $info
+            ];
         } else {
-            return false;
+           return  [
+                "status" => false,
+                "data" => []
+            ];
         }
     }
 }
