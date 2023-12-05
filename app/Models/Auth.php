@@ -13,4 +13,5 @@ class Auth extends Model
 
     protected $table = 'user_online';
     public $timestamps = false;
+    protected $keyType= 'string';
 }
