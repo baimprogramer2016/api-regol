@@ -46,3 +46,4 @@ Route::post('/pasien', [PasienController::class, 'getPasienByMr']);
 Route::post('/antrian', [AntrianController::class, 'getAntrian']);
 Route::post('/signup', [AuthController::class, 'signUp']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/edit-profil', [AuthController::class, 'editProfil']);

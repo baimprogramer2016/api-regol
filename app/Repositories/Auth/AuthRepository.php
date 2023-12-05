@@ -42,7 +42,7 @@ class AuthRepository implements AuthInterface
             ->where('id', $this->id)
             ->where('telpon', $this->telpon)
             ->get();
-        
+
         $check = $data->count();
 
         if ($check > 0) {
@@ -57,10 +57,32 @@ class AuthRepository implements AuthInterface
                 "data" => $info
             ];
         } else {
-           return  [
+            return  [
                 "status" => false,
                 "data" => []
             ];
+        }
+    }
+    public function editProfil($param_array)
+    {
+        $this->id = $param_array['id'];
+        $this->telpon = $param_array['telpon'];
+        $this->nama = $param_array['nama'];
+
+        $data = $this->auth_model->where('id', $this->id)->get();
+
+        $check = $data->count();
+
+        if ($check > 0) {
+            $this->auth_model->where('id', $this->id)
+                ->update([
+                    'telpon' => $this->telpon,
+                    'nama' => $this->nama,
+                ]);
+
+            return true;
+        } else {
+            return false;
         }
     }
 }

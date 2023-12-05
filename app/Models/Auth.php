@@ -12,4 +12,5 @@ class Auth extends Model
     protected $connection = 'odbc';
 
     protected $table = 'user_online';
+    public $timestamps = false;
 }
