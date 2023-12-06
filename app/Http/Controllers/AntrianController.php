@@ -22,7 +22,7 @@ class AntrianController extends Controller
     {
         try {
             #filter semua
-            if (empty($request->checkin) and empty($request->terlayani) and empty($request->telpon)) {
+            if (empty($request->checkin) || empty($request->terlayani) || empty($request->telpon)) {
                 $result = [
                     "code" => Response::HTTP_NOT_FOUND,
                     "message" => "Form Telepon , Checkin dan Terlayani Harus diisi"
