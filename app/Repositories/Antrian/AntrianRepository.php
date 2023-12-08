@@ -53,9 +53,8 @@ class AntrianRepository implements AntrianInterface
         # checkin = Y
         if ($this->checkin == 'Y') {
             $query = $query->where('checkin', 'Y');
-        }
-        elseif ($this->checkin == 'N') {
-            $query = $query->where('checkin',null);
+        } elseif ($this->checkin == 'N') {
+            $query = $query->where('checkin', null);
         }
         $query = $query->orderBy('antriandokter.tanggal', 'DESC')->get();
 
