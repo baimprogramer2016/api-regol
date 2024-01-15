@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AntrianController;
+use App\Http\Controllers\AntrolController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PasienController;
@@ -47,3 +48,10 @@ Route::post('/antrian', [AntrianController::class, 'getAntrian']);
 Route::post('/signup', [AuthController::class, 'signUp']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/edit-profil', [AuthController::class, 'editProfil']);
+
+//antrol
+Route::group(['prefix' => 'antrol'], function () {
+    Route::get('/bpjs-signature', [AntrolController::class, 'index'])->name('bpjs-signature');
+    Route::get('/bpjs-poli', [AntrolController::class, 'poli'])->name('bpjs-poli');
+    Route::get('/bpjs-get-skdp', [AntrolController::class, 'listSkdp'])->name('bpjs-get-skdp');
+});
