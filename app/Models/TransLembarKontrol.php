@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Antrol extends Model
+class TransLembarKontrol extends Model
 {
     use HasFactory;
     protected $connection = 'odbc';
-    protected $table = 'temp_skdp_bpjs';
-    protected $guarded = ['id'];
+    protected $table = 'trans_lembar_kontrol';
+
+    public $timestamps = false;
 }

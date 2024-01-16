@@ -54,7 +54,7 @@ class AntrolController extends Controller
         }
     }
 
-    public function listSkdp(Request $request)
+    public function udpateSkdp(Request $request)
     {
         try {
 

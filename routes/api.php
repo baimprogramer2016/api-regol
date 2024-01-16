@@ -30,6 +30,8 @@ Route::get('/', function () {
 Route::get('/tes', [TesController::class, 'index']);
 
 // Route::get('/dokter/{dokter_id}', [DokterController::class, 'getDokterId'])->name('dokter-id');
+
+// regol bontang
 Route::get('/dokter', [DokterController::class, 'getDokter']);
 Route::post('/dokter', [DokterController::class, 'getDokter']);
 Route::get('/jadwal-dokter', [DokterController::class, 'getJadwalDokter']);
@@ -48,10 +50,10 @@ Route::post('/antrian', [AntrianController::class, 'getAntrian']);
 Route::post('/signup', [AuthController::class, 'signUp']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/edit-profil', [AuthController::class, 'editProfil']);
-
+//
 //antrol
 Route::group(['prefix' => 'antrol'], function () {
     Route::get('/bpjs-signature', [AntrolController::class, 'index'])->name('bpjs-signature');
     Route::get('/bpjs-poli', [AntrolController::class, 'poli'])->name('bpjs-poli');
-    Route::get('/bpjs-get-skdp', [AntrolController::class, 'listSkdp'])->name('bpjs-get-skdp');
+    Route::get('/bpjs-update-skdp', [AntrolController::class, 'udpateSkdp'])->name('bpjs-update-skdp');
 });

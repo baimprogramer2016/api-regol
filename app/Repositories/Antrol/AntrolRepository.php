@@ -4,18 +4,25 @@ namespace App\Repositories\Antrol;
 
 use Illuminate\Http\Response;
 use App\Models\Antrol;
+use App\Models\Reg;
+use App\Models\TransLembarKontrol;
+use Illuminate\Support\Facades\DB;
 
 class AntrolRepository implements AntrolInterface
 {
 
-    private $antrol_model;
+    private $antrol_model, $reg_model, $trans_lembar_model;
 
 
     public function __construct(
         Antrol $antrol_model,
+        Reg $reg_model,
+        TransLembarKontrol $trans_lembar_model,
     ) {
 
         $this->antrol_model = $antrol_model;
+        $this->reg_model = $reg_model;
+        $this->trans_lembar_model = $trans_lembar_model;
     }
 
     public function getPoli()
@@ -38,7 +45,7 @@ class AntrolRepository implements AntrolInterface
 
     public function updateSkdp()
     {
-        //         UPDATE trans_lembar_kontrol SET
+        // return DB::connection('odbc')->select("UPDATE trans_lembar_kontrol SET
         // a.skdp_bpjs = c.noSuratKontrol
         // from
         // trans_lembar_kontrol a, reg b , temp_skdp_bpjs c
@@ -46,6 +53,16 @@ class AntrolRepository implements AntrolInterface
         // AND b.sep = c.noSepAsalKontrol
         // AND a.skdp_bpjs is null
         // AND noSuratKontrol is not null
+        // AND c.terbitSEP ='Belum'");
 
+        return $this->trans_lembar_model::join('reg', 'trans_lembar_kontrol.reg_no', '=', 'reg.reg_no')
+            ->join('temp_skdp_bpjs', 'reg.sep', '=', 'temp_skdp_bpjs.noSepAsalKontrol')
+            ->whereNull('trans_lembar_kontrol.skdp_bpjs')
+            ->whereNotNull('temp_skdp_bpjs.noSuratKontrol')
+            ->where('temp_skdp_bpjs.terbitSEP', 'Belum')
+            ->update([
+                'trans_lembar_kontrol.skdp_bpjs' => DB::raw('temp_skdp_bpjs.noSuratKontrol'),
+                'trans_lembar_kontrol.tgl_kontrol' => DB::raw('temp_skdp_bpjs.tglRencanaKontrol')
+            ]);
     }
 }

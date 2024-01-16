@@ -110,24 +110,6 @@ return [
             // ],
             'charset' => 'utf8',
         ],
-        'odbc_cileungsi' => [
-            'driver'   => 'odbc',
-            'dsn'      => env('DB_SYBASE_DSN_CILEUNGSI'),
-            'host'     => env('DB_SYBASE_HOST_CILEUNGSI'),
-            'port'     => env('DB_SYBASE_PORT_CILEUNGSI'),
-            'database' => env('DB_SYBASE_DATABASE_CILEUNGSI'),
-            'username' => env('DB_SYBASE_USERNAME_CILEUNGSI'),
-            'password' => env('DB_SYBASE_PASSWORD_CILEUNGSI'),
-            // 'options'  => [
-            //     'processor' => Illuminate\Database\Query\Processors\Processor::class,
-            //     'grammar' => [
-            //         'query' => Illuminate\Database\Query\Grammars\SqlServerGrammar::class,
-            //         'schema' => Illuminate\Database\Schema\Grammars\SqlServerGrammar::class
-            //     ]
-            // ],
-            'charset' => 'utf8',
-        ],
-
 
     ],
 

@@ -11,5 +11,5 @@ class Reg extends Model
 
     protected $table = 'reg';
 
-    protected $connection = 'odbc_cileungsi';
+    protected $connection = 'odbc';
 }
