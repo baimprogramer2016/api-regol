@@ -19,9 +19,11 @@ class AntrolController extends Controller
     public $antrol_repo;
     public $tgl_awal;
     public $tgl_akhir;
+    public $filter = 1;
     public function __construct(
         AntrolInterface $antrolInterface
     ) {
+
         $this->antrol_repo = $antrolInterface;
         $this->tgl_awal = Carbon::now()->format('Y-m-d');
         $this->tgl_akhir = Carbon::now()->format('Y-m-d');
@@ -65,8 +67,18 @@ class AntrolController extends Controller
             if ($request->exists('tgl_akhir')) {
                 $this->tgl_akhir = $request->tgl_akhir;
             }
+            if ($request->exists('filter')) {
+                $this->filter = $request->filter;
+            }
 
-            $param['url'] = env('base_url_bpjs') . '/vclaim-rest/RencanaKontrol/ListRencanaKontrol/tglAwal/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir . '/filter/1';
+
+            //jika filter adalah tanggal kontrol, maka untuk esok harinya
+            if ($this->filter == 2) {
+                $this->tgl_awal = date('Y-m-d', strtotime($this->tgl_awal . ' +1 day'));;
+                $this->tgl_akhir = date('Y-m-d', strtotime($this->tgl_akhir . ' +1 day'));;
+            }
+
+            $param['url'] = env('base_url_bpjs') . '/vclaim-rest/RencanaKontrol/ListRencanaKontrol/tglAwal/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir . '/filter/' . $this->filter;
 
             $resultApi = json_decode($this->getDataBpjs($param), true);
 
