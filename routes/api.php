@@ -55,5 +55,5 @@ Route::post('/edit-profil', [AuthController::class, 'editProfil']);
 Route::group(['prefix' => 'antrol'], function () {
     Route::get('/bpjs-signature', [AntrolController::class, 'index'])->name('bpjs-signature');
     Route::get('/bpjs-poli', [AntrolController::class, 'poli'])->name('bpjs-poli');
-    Route::get('/bpjs-update-skdp', [AntrolController::class, 'udpateSkdp'])->name('bpjs-update-skdp');
+    Route::get('/bpjs-update-skdp/{filter}', [AntrolController::class, 'udpateSkdp'])->name('bpjs-update-skdp');
 });

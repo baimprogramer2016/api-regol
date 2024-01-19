@@ -56,10 +56,11 @@ class AntrolController extends Controller
         }
     }
 
-    public function udpateSkdp(Request $request)
+    public function udpateSkdp(Request $request, $filter)
     {
         try {
 
+            $this->filter = $filter;
             //jika ada parameter
             if ($request->exists('tgl_awal')) {
                 $this->tgl_awal = $request->tgl_awal;
@@ -67,10 +68,6 @@ class AntrolController extends Controller
             if ($request->exists('tgl_akhir')) {
                 $this->tgl_akhir = $request->tgl_akhir;
             }
-            if ($request->exists('filter')) {
-                $this->filter = $request->filter;
-            }
-
 
             //jika filter adalah tanggal kontrol, maka untuk esok harinya
             if ($this->filter == 2) {
