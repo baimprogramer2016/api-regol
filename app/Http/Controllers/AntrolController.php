@@ -17,8 +17,8 @@ class AntrolController extends Controller
     use SignatureBPJS;
 
     public $antrol_repo;
-    public $tgl_awal;
-    public $tgl_akhir;
+    public $tgl_awal, $tgl_akhir, $tgl_kunjungan;
+    public $bulan, $tahun, $no_kartu;
     public $filter = 1;
     public function __construct(
         AntrolInterface $antrolInterface
@@ -27,6 +27,7 @@ class AntrolController extends Controller
         $this->antrol_repo = $antrolInterface;
         $this->tgl_awal = Carbon::now()->format('Y-m-d');
         $this->tgl_akhir = Carbon::now()->format('Y-m-d');
+        $this->tgl_kunjungan = Carbon::now()->format('Y-m-d');
     }
     public function index(Request $request)
     {
@@ -95,6 +96,84 @@ class AntrolController extends Controller
                 'message' => 'Sukses'
             ];
             return response()->json($result);
+            // return $resultDecompres;
+        } catch (Throwable $e) {
+            $result = [
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Terjadi Kesalahan ' . $e->getMessage()
+            ];
+            return response()->json($result);
+        }
+    }
+
+    public function cariSep(Request $request)
+    {
+        try {
+
+            $this->tgl_awal = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $this->tgl_akhir = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+            # jika parameter di isi, jika tidak maka default
+            if ($request->exists('tgl_awal')) {
+                $this->tgl_awal = $request->tgl_awal;
+            }
+            if ($request->exists('tgl_akhir')) {
+                $this->tgl_akhir = $request->tgl_akhir;
+            }
+            if ($request->exists('tgl_kunjungan')) {
+                $this->tgl_kunjungan = $request->tgl_kunjungan;
+            }
+
+            //jika ada kartu
+            if ($request->exists('no_kartu')) {
+                if (empty($request->no_kartu)) {
+                    $result = [
+                        'code' => Response::HTTP_BAD_REQUEST,
+                        'message' => "No Kartu BPJS Harus di isix",
+                    ];
+                    return response()->json($result);
+                } else {
+
+                    # cari berdasarkan no kartu yang diinput
+                    $this->no_kartu = $request->no_kartu;
+                    $result = [
+                        'code' => Response::HTTP_OK,
+                        'message' => "Pake Kartu Belum tersedia",
+                    ];
+                    return response()->json($result);
+                }
+            } else {
+                # cari berdasarkan query
+                $this->antrol_repo->truncateTempSep();
+                //query no_bpjs pasien join dengan reg dimana sep masih kosong
+                $data_pasien =  $this->antrol_repo->getSepReady($this->tgl_kunjungan);
+                foreach ($data_pasien as $item_pasien) {
+
+                    $param['url'] = env('base_url_bpjs') . '/vclaim-rest/monitoring/HistoriPelayanan/Nokartu/' . $item_pasien->no_peserta . '/tglMulai/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir;
+
+                    $resultApi = json_decode($this->getDataBpjs($param), true);
+
+                    foreach ($resultApi['histori'] as $item_sep) {
+                        # jika tanggal sama insert
+                        $this->antrol_repo->insertSep($item_sep);
+                    }
+                }
+
+                # delete yang diluar tanggal kunjungan
+                $this->antrol_repo->deleteNotNow($this->tgl_kunjungan);
+
+                # update sep
+                $this->antrol_repo->updateSep();
+
+                $result = [
+                    'code' => Response::HTTP_OK,
+                    'message' => 'Sukses'
+                ];
+
+                return response()->json($result);
+            }
+
+
             // return $resultDecompres;
         } catch (Throwable $e) {
             $result = [
