@@ -67,7 +67,8 @@ class AntrolRepository implements AntrolInterface
             ->where('temp_skdp_bpjs.terbitSEP', 'Belum')
             ->update([
                 'trans_lembar_kontrol.skdp_bpjs' => DB::raw('temp_skdp_bpjs.noSuratKontrol'),
-                'trans_lembar_kontrol.tgl_kontrol' => DB::raw('temp_skdp_bpjs.tglRencanaKontrol')
+                'trans_lembar_kontrol.tgl_kontrol' => DB::raw('temp_skdp_bpjs.tglRencanaKontrol'),
+                'trans_lembar_kontrol.update_by' => 'SHT'
             ]);
     }
 
@@ -82,6 +83,7 @@ class AntrolRepository implements AntrolInterface
             ->whereNotNull('pasien.no_peserta')
             ->whereNotNull('master_poli.poli_bpjs')
             ->whereDate('reg.tanggal_registrasi', '=', $tgl_kunjungan)
+            // ->where('pasien.no_peserta', '0002320087083')
             ->select('pasien.no_peserta', 'reg.sep', 'reg.tanggal_registrasi', 'reg.nama', 'master_poli.poli_bpjs')
             ->get();
     }

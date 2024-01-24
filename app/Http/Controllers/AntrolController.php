@@ -129,7 +129,7 @@ class AntrolController extends Controller
                 if (empty($request->no_kartu)) {
                     $result = [
                         'code' => Response::HTTP_BAD_REQUEST,
-                        'message' => "No Kartu BPJS Harus di isix",
+                        'message' => "No Kartu BPJS Harus di isi",
                     ];
                     return response()->json($result);
                 } else {
@@ -143,26 +143,28 @@ class AntrolController extends Controller
                     return response()->json($result);
                 }
             } else {
+
                 # cari berdasarkan query
                 $this->antrol_repo->truncateTempSep();
                 //query no_bpjs pasien join dengan reg dimana sep masih kosong
+
                 $data_pasien =  $this->antrol_repo->getSepReady($this->tgl_kunjungan);
+                // return $data_pasien;
                 foreach ($data_pasien as $item_pasien) {
 
                     $param['url'] = env('base_url_bpjs') . '/vclaim-rest/monitoring/HistoriPelayanan/Nokartu/' . $item_pasien->no_peserta . '/tglMulai/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir;
-
-                    $resultApi = json_decode($this->getDataBpjs($param), true);
-
-                    foreach ($resultApi['histori'] as $item_sep) {
-                        # jika tanggal sama insert
-                        $this->antrol_repo->insertSep($item_sep);
+                    $data_response = $this->getDataBpjs($param);
+                    if (!empty($data_response)) {
+                        $resultApi = json_decode($data_response, true);
+                        foreach ($resultApi['histori'] as $item_sep) {
+                            $this->antrol_repo->insertSep($item_sep);
+                        }
                     }
                 }
-
                 # delete yang diluar tanggal kunjungan
                 $this->antrol_repo->deleteNotNow($this->tgl_kunjungan);
 
-                # update sep
+                // # update sep
                 $this->antrol_repo->updateSep();
 
                 $result = [
