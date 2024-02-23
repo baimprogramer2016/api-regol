@@ -3,6 +3,7 @@
 use App\Http\Controllers\AntrianController;
 use App\Http\Controllers\AntrolController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BpjsTesController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PenjaminController;
@@ -57,4 +58,10 @@ Route::group(['prefix' => 'antrol'], function () {
     Route::get('/bpjs-poli', [AntrolController::class, 'poli'])->name('bpjs-poli');
     Route::get('/bpjs-update-skdp/{filter}', [AntrolController::class, 'udpateSkdp'])->name('bpjs-update-skdp');
     Route::get('/bpjs-cari-sep', [AntrolController::class, 'cariSep'])->name('bpjs-cari-sep');
+    Route::get('/bpjs-cari-sep-manual', [AntrolController::class, 'cariSepManual'])->name('bpjs-cari-sep-manual');
+});
+
+Route::group(['prefix' => 'bontang'], function () {
+    Route::get('/bpjs-tes-signature', [BpjsTesController::class, 'index'])->name('bpjs-tes-signature');
+    Route::get('/bpjs-tes', [BpjsTesController::class, 'tesApi'])->name('bpjs-poli');
 });

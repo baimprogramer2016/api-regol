@@ -87,4 +87,34 @@ trait SignatureBPJS
 
         return $resultDecompres;
     }
+    function getDataBpjs2($param)
+    {
+        # get xonst
+        $signature = $this->SignatureAntrol();
+
+        $url = $param['url'];
+
+        # proses tarik data
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'x-cons-id' => $signature['x-cons-id'],
+            'x-timestamp' => $signature['x-timestamp'],
+            'x-signature' => $signature['x-signature'],
+            'user_key' => $signature['x-user-key']
+        ])->get($url);
+
+        # parse
+        $result = json_decode($response, true);
+
+        if ($result['response'] != null) {
+            # buat key key decrypt & decompres
+            $keyDecrypt = $signature['x-cons-id'] . $signature['x-secret-key'] . $signature['x-timestamp'];
+            $resultDecrypt   = $this->stringDecrypt($keyDecrypt, $result['response']);
+            $resultDecompres   = $this->decompress($resultDecrypt);
+
+            return $resultDecompres;
+        } else {
+            return $response;
+        }
+    }
 }

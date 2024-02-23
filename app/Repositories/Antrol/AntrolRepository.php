@@ -77,7 +77,7 @@ class AntrolRepository implements AntrolInterface
     {
         return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
             ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
-            ->where('reg.kode_poli', '<>', 'UGD01')
+            // ->where('reg.kode_poli', '<>', 'UGD01')
             ->where('reg.sep', '=', '')
             ->where('reg.eselon', '=', 'Z3688')
             ->whereNotNull('pasien.no_peserta')
@@ -116,11 +116,12 @@ class AntrolRepository implements AntrolInterface
         // AND reg.sep = ''
 
         return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
-            ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
+            // ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
             ->join('temp_cari_sep_bpjs', 'temp_cari_sep_bpjs.noKartu', '=', 'pasien.no_peserta')
-            ->where(DB::raw('LOWER(temp_cari_sep_bpjs.poliTujSep)'), '=', DB::raw('LOWER(master_poli.poli_bpjs)'))
+            // ->where(DB::raw('LOWER(temp_cari_sep_bpjs.poliTujSep)'), '=', DB::raw('LOWER(master_poli.poli_bpjs)'))
             ->whereDate('reg.tanggal_registrasi', DB::raw('convert(date,temp_cari_sep_bpjs.tglSep)'))
             ->where('reg.sep', '=', '')
+            ->where('reg.eselon', '=', 'Z3688')
             ->update([
                 'reg.sep' => DB::raw('temp_cari_sep_bpjs.noSep')
             ]);

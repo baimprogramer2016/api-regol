@@ -184,4 +184,58 @@ class AntrolController extends Controller
             return response()->json($result);
         }
     }
+    public function cariSepManual(Request $request)
+    {
+        try {
+
+            $this->tgl_awal = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $this->tgl_akhir = Carbon::now()->endOfMonth()->format('Y-m-d');
+            $this->tgl_kunjungan = Carbon::now()->format('Y-m-d');
+
+            # jika parameter di isi, jika tidak maka default
+            if ($request->exists('tgl_awal')) {
+                $this->tgl_awal = $request->tgl_awal;
+            }
+            if ($request->exists('tgl_akhir')) {
+                $this->tgl_akhir = $request->tgl_akhir;
+            }
+            if ($request->exists('tgl_kunjungan')) {
+                $this->tgl_kunjungan = $request->tgl_kunjungan;
+            }
+            if ($request->exists('no_kartu')) {
+                $this->no_kartu = $request->no_kartu;
+            }
+
+            //jika ada kartu
+            if ($request->exists('no_kartu')) {
+                if (empty($request->no_kartu)) {
+                    $result = [
+                        'code' => Response::HTTP_BAD_REQUEST,
+                        'message' => "No Kartu BPJS Harus di isi",
+                    ];
+                    return response()->json($result);
+                } else {
+
+                    $param['url'] = env('base_url_bpjs') . '/vclaim-rest/monitoring/HistoriPelayanan/Nokartu/' . $this->no_kartu . '/tglMulai/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir;
+                    $data_response = $this->getDataBpjs($param);
+
+                    $result = [
+                        'code' => Response::HTTP_OK,
+                        'message' => "Selesai",
+                        'data' => json_decode($data_response, true)
+                    ];
+                    return response()->json($result);
+                }
+            }
+
+
+            // return $resultDecompres;
+        } catch (Throwable $e) {
+            $result = [
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Terjadi Kesalahan ' . $e->getMessage()
+            ];
+            return response()->json($result);
+        }
+    }
 }
