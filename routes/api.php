@@ -59,6 +59,7 @@ Route::group(['prefix' => 'antrol'], function () {
     Route::get('/bpjs-update-skdp/{filter}', [AntrolController::class, 'udpateSkdp'])->name('bpjs-update-skdp');
     Route::get('/bpjs-cari-sep', [AntrolController::class, 'cariSep'])->name('bpjs-cari-sep');
     Route::get('/bpjs-cari-sep-manual', [AntrolController::class, 'cariSepManual'])->name('bpjs-cari-sep-manual');
+    Route::get('/bpjs-cari-sep-casemix', [AntrolController::class, 'cariSepCasemix'])->name('bpjs-cari-sep-casemix');
 });
 
 Route::group(['prefix' => 'bontang'], function () {

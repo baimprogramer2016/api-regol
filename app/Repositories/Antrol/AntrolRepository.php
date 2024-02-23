@@ -5,6 +5,7 @@ namespace App\Repositories\Antrol;
 use Illuminate\Http\Response;
 use App\Models\Antrol;
 use App\Models\AntrolSep;
+use App\Models\AntrolSepCasemix;
 use App\Models\Reg;
 use App\Models\TransLembarKontrol;
 use Carbon\Carbon;
@@ -13,20 +14,26 @@ use Illuminate\Support\Facades\DB;
 class AntrolRepository implements AntrolInterface
 {
 
-    private $antrol_model, $reg_model, $trans_lembar_model, $antrol_sep_model;
+    private $antrol_model,
+        $reg_model,
+        $trans_lembar_model,
+        $antrol_sep_model,
+        $antrol_sep_casemix_model;
 
 
     public function __construct(
         Antrol $antrol_model,
         Reg $reg_model,
         TransLembarKontrol $trans_lembar_model,
-        AntrolSep $antrol_sep_model
+        AntrolSep $antrol_sep_model,
+        AntrolSepCasemix $antrol_sep_casemix_model
     ) {
 
         $this->antrol_model = $antrol_model;
         $this->reg_model = $reg_model;
         $this->trans_lembar_model = $trans_lembar_model;
         $this->antrol_sep_model = $antrol_sep_model;
+        $this->antrol_sep_casemix_model = $antrol_sep_casemix_model;
     }
 
     public function getPoli()
@@ -77,7 +84,7 @@ class AntrolRepository implements AntrolInterface
     {
         return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
             ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
-            // ->where('reg.kode_poli', '<>', 'UGD01')
+            ->where('reg.kode_poli', '<>', 'UGD01')
             ->where('reg.sep', '=', '')
             ->where('reg.eselon', '=', 'Z3688')
             ->whereNotNull('pasien.no_peserta')
@@ -116,14 +123,76 @@ class AntrolRepository implements AntrolInterface
         // AND reg.sep = ''
 
         return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
-            // ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
+            ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
             ->join('temp_cari_sep_bpjs', 'temp_cari_sep_bpjs.noKartu', '=', 'pasien.no_peserta')
-            // ->where(DB::raw('LOWER(temp_cari_sep_bpjs.poliTujSep)'), '=', DB::raw('LOWER(master_poli.poli_bpjs)'))
+            ->where(DB::raw('LOWER(temp_cari_sep_bpjs.poliTujSep)'), '=', DB::raw('LOWER(master_poli.poli_bpjs)'))
             ->whereDate('reg.tanggal_registrasi', DB::raw('convert(date,temp_cari_sep_bpjs.tglSep)'))
             ->where('reg.sep', '=', '')
             ->where('reg.eselon', '=', 'Z3688')
+            ->whereNotNull('temp_cari_sep_bpjs.tglSep')
             ->update([
                 'reg.sep' => DB::raw('temp_cari_sep_bpjs.noSep')
+            ]);
+    }
+
+
+    //casemix sep
+    public function truncateTempSepCasemix()
+    {
+        return $this->antrol_sep_casemix_model->truncate();
+    }
+
+    public function getSepReadySepCasemix($tgl_kunjungan)
+    {
+        return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
+            ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
+            ->where('reg.kode_poli', 'UGD01')
+            ->where('reg.sep', '=', '')
+            ->where('reg.eselon', '=', 'Z3688')
+            ->where('reg.rawat_jalan', '<>', 'Y')
+            ->whereNotNull('pasien.no_peserta')
+            ->whereNotNull('master_poli.poli_bpjs')
+            ->whereDate('reg.tgl_pulang', '=', $tgl_kunjungan)
+            // ->where('pasien.no_peserta', '0002320087083')
+            ->select('pasien.no_peserta', 'reg.sep', 'reg.tanggal_registrasi', 'reg.nama', 'master_poli.poli_bpjs')
+            ->get();
+    }
+
+    public function insertSepCasemix($param = [])
+    {
+        return $this->antrol_sep_casemix_model->insert($param);
+    }
+
+    public function deleteNotNowCasemix($tgl_kunjungan)
+    {
+        return $this->antrol_sep_casemix_model->whereDate('tglPlgSep', '<>', $tgl_kunjungan)->delete();
+    }
+
+
+    public function updateSepCasemix()
+    {
+        // select reg.sep,temp_cari_sep_bpjs.* from
+        // temp_cari_sep_bpjs,
+        // pasien,
+        // reg,
+        // master_poli
+        // WHERE temp_cari_sep_bpjs.noKartu = pasien.no_peserta -done
+        // AND pasien.medrec_no = reg.no_mr -done
+        // AND reg.kode_poli = master_poli.poli_id  -done
+        // AND temp_cari_sep_bpjs.poliTujSep = master_poli.poli_bpjs
+        // AND convert(date,reg.tanggal_registrasi) = convert(date,temp_cari_sep_bpjs.tglSep)
+        // AND reg.sep = ''
+
+        return $this->reg_model::join('pasien', 'reg.no_mr', '=', 'pasien.medrec_no')
+            // ->join('master_poli', 'reg.kode_poli', '=', 'master_poli.poli_id')
+            ->join('temp_cari_sep_casemix_bpjs', 'temp_cari_sep_casemix_bpjs.noKartu', '=', 'pasien.no_peserta')
+            // ->where(DB::raw('LOWER(temp_cari_sep_casemix_bpjs.poliTujSep)'), '=', DB::raw('LOWER(master_poli.poli_bpjs)'))
+            ->whereDate('reg.tgl_pulang', DB::raw('convert(date,temp_cari_sep_casemix_bpjs.tglPlgSep)'))
+            ->where('reg.sep', '=', '')
+            ->where('reg.eselon', '=', 'Z3688')
+            ->whereNotNull('temp_cari_sep_casemix_bpjs.tglPlgSep')
+            ->update([
+                'reg.sep' => DB::raw('temp_cari_sep_casemix_bpjs.noSep')
             ]);
     }
 }

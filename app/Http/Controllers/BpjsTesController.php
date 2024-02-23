@@ -18,9 +18,7 @@ class BpjsTesController extends Controller
     public function tesApi(Request $request)
     {
         try {
-            $param['url'] = env('base_url_bpjs') . config('base_url.url-bpjs.diagnosa');
-
-            // return $param['url'];
+            $param['url'] = env('base_url_bpjs') . config('base_url.url-bpjs.rencana-kontrol-sep-insert');
 
             $resultApi = json_decode($this->getDataBpjs2($param));
 

@@ -2,9 +2,30 @@
 return [
     'url-bpjs' => [
         "peserta-aktif-kartu" => "/vclaim-rest/Peserta/nokartu/000352686765/tglSEP/2024-02-23",
-        // "peserta-aktif-kartu" => "/vclaim-rest/Peserta/nokartu/0003526867653/tglSEP/2024-02-23",
+        "peserta-aktif-kartu-salah" => "/vclaim-rest/Peserta/nokartu/0003526867653/tglSEP/2024-02-23",
         "peserta-aktif-nik" => "/vclaim-rest/Peserta/nik/3201071207220001/tglSEP/2024-02-23",
-        // "peserta-aktif-nik" => "/vclaim-rest/Peserta/nik/32010712072200013/tglSEP/2024-02-23"
-        "diagnosa" => "/vclaim-rest/referensi/diagnosa/A04"
+        "peserta-aktif-nik-salah" => "/vclaim-rest/Peserta/nik/32010712072200013/tglSEP/2024-02-23",
+        "diagnosa" => "/vclaim-rest/referensi/diagnosa/A04",
+        "dokter" => "/vclaim-rest/referensi/dokter/pelayanan/1/tglPelayanan/2024-02-22/Spesialis/82836",
+        "poli" => "/vclaim-rest/referensi/poli/ICU",
+        "faskes1" => "/vclaim-rest/referensi/faskes/00161001/1",
+        "faskes2" => "/vclaim-rest/referensi/faskes/0114R030/2",
+        "procedure" => "/vclaim-rest/referensi/procedure/21.05",
+        "kelas_rawat" => "/vclaim-rest/referensi/kelasrawat",
+        "ruang_rawat" => "/vclaim-rest/referensi/ruangrawat",
+        "spesialistik" => "/vclaim-rest/referensi/spesialistik",
+        "carakeluar" => "/vclaim-rest/referensi/carakeluar",
+        "pascapulang" => "/vclaim-rest/referensi/pascapulang",
+        "propinsi" => "/vclaim-rest/referensi/propinsi",
+        "kecamatan" => "/vclaim-rest/referensi/kecamatan/kabupaten/3139",
+        "cari-sep" => "/vclaim-rest/SEP/0117R0110224V005651",
+        "cari-sep-tidak" => "/vclaim-rest/SEP/0117R0110224V00565X",
+        "cari-sep-internal" => "/vclaim-rest/SEP/Internal/0905R0031020V000397",
+        "cari-sep-internal-tidak" => "/vclaim-rest/SEP/Internal/0117R0110224V00565X",
+        "monitor-kunjungan" => "/vclaim-rest/Monitoring/Kunjungan/Tanggal/2024-02-23/JnsPelayanan/2",
+        "list-finger" => "/vclaim-rest/SEP/FingerPrint/List/Peserta/TglPelayanan/2024-02-22",
+        "rencana-kontrol-sep" => "/vclaim-rest/RencanaKontrol/nosep/0117R0110224k005651",
+        "rencana-kontrol-sep-habis" => "/vclaim-rest/RencanaKontrol/noSuratKontrol/0117R0111023K004327",
+        "rencana-kontrol-sep-insert" => "/vclaim-rest/RencanaKontrol/insert",
     ]
 ];

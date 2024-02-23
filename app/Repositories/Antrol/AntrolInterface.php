@@ -20,4 +20,9 @@ interface AntrolInterface
     public function updateSep();
 
     public function deleteNotNow($tgl_kunjungan);
+    public function truncateTempSepCasemix();
+    public function getSepReadySepCasemix($tgl_kunjungan);
+    public function insertSepCasemix($param = []);
+    public function deleteNotNowCasemix($tgl_kunjungan);
+    public function updateSepCasemix();
 }

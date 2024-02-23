@@ -238,4 +238,94 @@ class AntrolController extends Controller
             return response()->json($result);
         }
     }
+
+
+    public function cariSepCasemix(Request $request)
+    {
+        try {
+
+            if ($request->exists('tgl_kunjungan')) {
+                $this->tgl_kunjungan = $request->tgl_kunjungan;
+            }
+
+            //jika ada kartu
+            if ($request->exists('no_kartu')) {
+                if (empty($request->no_kartu)) {
+                    $result = [
+                        'code' => Response::HTTP_BAD_REQUEST,
+                        'message' => "No Kartu BPJS Harus di isi",
+                    ];
+                    return response()->json($result);
+                } else {
+
+                    # cari berdasarkan no kartu yang diinput
+                    $this->no_kartu = $request->no_kartu;
+                    $result = [
+                        'code' => Response::HTTP_OK,
+                        'message' => "Pake Kartu Belum tersedia",
+                    ];
+                    return response()->json($result);
+                }
+            } else {
+
+                # cari berdasarkan query
+                $this->antrol_repo->truncateTempSepCasemix();
+                //query no_bpjs pasien join dengan reg dimana sep masih kosong
+
+                $data_pasien =  $this->antrol_repo->getSepReadySepCasemix($this->tgl_kunjungan);
+
+                //START - MENCARI TANGGAL TER AWAL DAN TER AKHIR PADA DATA BIAR GK BERAT
+                $tanggal_registrasi_tertinggi = $data_pasien[0]['tanggal_registrasi'];
+                $tanggal_registrasi_terendah = $data_pasien[0]['tanggal_registrasi'];
+
+                // Iterasi melalui data untuk mencari tanggal registrasi tertinggi dan terendah
+                foreach ($data_pasien as $item_pasien) {
+                    if ($item_pasien['tanggal_registrasi'] > $tanggal_registrasi_tertinggi) {
+                        $tanggal_registrasi_tertinggi = $item_pasien['tanggal_registrasi'];
+                    }
+                    if ($item_pasien['tanggal_registrasi'] < $tanggal_registrasi_terendah) {
+                        $tanggal_registrasi_terendah = $item_pasien['tanggal_registrasi'];
+                    }
+                }
+
+                $this->tgl_awal = date('Y-m-d', strtotime($tanggal_registrasi_terendah));;
+                $this->tgl_akhir = date('Y-m-d', strtotime($tanggal_registrasi_tertinggi));;
+
+                //END - MENCARI TANGGAL TER AWAL DAN TER AKHIR PADA DATA BIAR GK BERAT
+
+                foreach ($data_pasien as $item_pasien) {
+
+                    $param['url'] = env('base_url_bpjs') . '/vclaim-rest/monitoring/HistoriPelayanan/Nokartu/' . $item_pasien->no_peserta . '/tglMulai/' . $this->tgl_awal . '/tglAkhir/' . $this->tgl_akhir;
+                    $data_response = $this->getDataBpjs($param);
+
+                    if (!empty($data_response)) {
+                        $resultApi = json_decode($data_response, true);
+                        foreach ($resultApi['histori'] as $item_sep) {
+                            $this->antrol_repo->insertSepCasemix($item_sep);
+                        }
+                    }
+                }
+                # delete yang diluar tanggal kunjungan
+                $this->antrol_repo->deleteNotNowCasemix($this->tgl_kunjungan);
+
+                // # update sep
+                $this->antrol_repo->updateSepCasemix();
+
+                $result = [
+                    'code' => Response::HTTP_OK,
+                    'message' => 'Sukses'
+                ];
+
+                return response()->json($result);
+            }
+
+            // return $resultDecompres;
+        } catch (Throwable $e) {
+            $result = [
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => 'Terjadi Kesalahan ' . $e->getMessage()
+            ];
+            return response()->json($result);
+        }
+    }
 }
