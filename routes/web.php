@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TindakanControl;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return 'API REGOL - Smarthubtechnologies V.2';
 });
+
+Route::get('/tindakan-aktif', [TindakanControl::class, 'index'])->name('tindakan-aktif');
+Route::post('/tindakan-poli-update', [TindakanControl::class, 'update'])->name('tindakan-poli-update');
