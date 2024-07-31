@@ -5,6 +5,7 @@ use App\Http\Controllers\AntrolController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BpjsTesController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\IcareController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PenjaminController;
 use App\Http\Controllers\PoliController;
@@ -60,6 +61,10 @@ Route::group(['prefix' => 'antrol'], function () {
     Route::get('/bpjs-cari-sep', [AntrolController::class, 'cariSep'])->name('bpjs-cari-sep');
     Route::get('/bpjs-cari-sep-manual', [AntrolController::class, 'cariSepManual'])->name('bpjs-cari-sep-manual');
     Route::get('/bpjs-cari-sep-casemix', [AntrolController::class, 'cariSepCasemix'])->name('bpjs-cari-sep-casemix');
+});
+Route::group(['prefix' => 'icare'], function () {
+    Route::get('/bpjs-icare', [IcareController::class, 'index'])->name('bpjs-icare');
+    Route::get('/bpjs-jadwal-hfis/{poli}/{tanggal}', [IcareController::class, 'jadwal_hfis'])->name('bpjs-jadwal-hfis');
 });
 
 Route::group(['prefix' => 'bontang'], function () {

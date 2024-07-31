@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\Auth\AuthInterface::class, \App\Repositories\Auth\AuthRepository::class);
         $this->app->bind(\App\Repositories\Antrol\AntrolInterface::class, \App\Repositories\Antrol\AntrolRepository::class);
         $this->app->bind(\App\Repositories\Tindakan\TindakanInterface::class, \App\Repositories\Tindakan\TindakanRepository::class);
+        $this->app->bind(\App\Repositories\Icare\IcareInterface::class, \App\Repositories\Icare\IcareRepository::class);
     }
 
     /**
